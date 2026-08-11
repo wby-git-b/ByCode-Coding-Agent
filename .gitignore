@@ -1,0 +1,7 @@
+node_modules/
+dist/
+config.yaml
+*.tgz
+.mewcode/
+.claude/
+CLAUDE.md
