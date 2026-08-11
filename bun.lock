@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "mewcode",
+      "name": "bycode-coding-agent",
       "dependencies": {
         "@anthropic-ai/sdk": "^0.99.0",
         "@modelcontextprotocol/sdk": "^1.29.0",

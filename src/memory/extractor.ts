@@ -7,7 +7,7 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 
 import { join, basename } from "node:path";
 import { homedir } from "node:os";
 import type { LLMClient } from "../llm/client.js";
-import { ConversationManager } from "../conversation/conversation.js";
+import { ConversationManager, type ToolUseBlock } from "../conversation/conversation.js";
 import { MemoryManager } from "./manager.js";
 import { ToolRegistry } from "../tools/registry.js";
 import { ReadFileTool } from "../tools/read-file.js";
@@ -217,14 +217,27 @@ export class MemoryExtractor {
       mgr.rebuildIndex();
     }
 
-    return memoryPaths.map(p => basename(p));
+    return memoryPaths.map(p => basename(p).replace(/\.md$/i, ""));
   }
 
   /** 从对话消息中提取 WriteFile/EditFile 工具调用的文件路径 */
-  private extractWrittenPaths(messages: Array<{ role: string; content: string }>): string[] {
+  private extractWrittenPaths(
+    messages: Array<{ role: string; content: string; toolUses?: ToolUseBlock[] }>
+  ): string[] {
     const paths: string[] = [];
     for (const msg of messages) {
       if (msg.role !== "assistant") continue;
+      // Structured tool calls: read file_path from WriteFile/EditFile arguments.
+      for (const tu of msg.toolUses ?? []) {
+        const filePath = tu.arguments?.file_path;
+        if (
+          typeof filePath === "string" &&
+          (filePath.includes("memory") || filePath.endsWith(".md"))
+        ) {
+          paths.push(filePath);
+        }
+      }
+      // Fallback: tool_use JSON embedded in plain text.
       // 匹配 tool_use 中的 file_path 参数
       const filePathMatches = msg.content.matchAll(/"file_path"\s*:\s*"([^"]+)"/g);
       for (const m of filePathMatches) {

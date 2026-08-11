@@ -1,9 +1,9 @@
 {
-  "name": "mewcode",
+  "name": "bycode-coding-agent",
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "mewcode": "./src/main.tsx"
+    "bycode": "./src/main.tsx"
   },
   "scripts": {
     "start": "bun run src/main.tsx",

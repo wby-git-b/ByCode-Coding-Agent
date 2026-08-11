@@ -706,7 +706,8 @@ export function App({ providers, mcpServers, hooks, sandboxConfig: sandboxYaml, 
               convRef.current,
               clientRef.current,
               recoveryStateRef.current,
-              registryRef.current.listTools().map((t) => t.name)
+              registryRef.current.listTools().map((t) => t.name),
+              registryRef.current.getAllSchemas()
             ).then((result) => {
               // Persist the boundary so the compacted state survives /resume.
               if (result.boundary) {

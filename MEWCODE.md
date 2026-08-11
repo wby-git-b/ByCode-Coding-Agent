@@ -1,4 +1,4 @@
-# MewCode 项目
+# ByCode Coding Agent 项目
 
 ## 技术栈
 - TypeScript + Bun + Ink (React for CLI)
